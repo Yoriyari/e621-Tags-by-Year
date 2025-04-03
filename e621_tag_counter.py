@@ -17,7 +17,8 @@
 # ------------------------------------------------------------------------------
 
 import sys, csv, os, re
-from playwright.sync_api import Playwright, TimeoutError, sync_playwright
+from urllib.parse import quote_plus as url_encode_plus
+from playwright.sync_api import sync_playwright, Playwright, TimeoutError
 
 CURRENT_YEAR = 2025
 INITIAL_BOUND_SCORE = 512 # For batched counting with >750 pages of posts
@@ -155,7 +156,7 @@ def update_csv_file(new_row):
 
 def get_post_count_for_year(page, year, tags) -> int:
     try:
-        year_tags = f"{tags} status:any date:{year}_yesteryears_ago"
+        year_tags = url_encode_plus(f"{tags} status:any date:{year}_yesteryears_ago")
         return get_post_count(page, year_tags)
     except TimeoutError:
         print("\nWebpage timed out -- Retrying...\n")
